@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WEATHER</string>
+    <string name="unit_celsius">º C</string>
+    <string name="unit_fahrenheit">º F</string>
+    <string name="example_value">32</string>
+    <string name="example_city">Bishkek</string>
+    <string name="example_sunny">Sunny</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="clouds">Clouds</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="search">Search</string>
+
+    <string name="key_api">AIzaSyBFKx9lG3h0s6aOrHjOrLxpOQ2TWYMKOv8</string>
+    <string name="msg_cant_find_city">Could not find the city(!</string>
+    <string name="weather_detail">Weather detail</string>
+    <string name="weather_next_5_days">Weather for 5 days</string>
+    <string name="appId">b03326d8c668ab2a608b6e86c61ee31c</string>
+    <string name="unit">metric</string>
+</resources>

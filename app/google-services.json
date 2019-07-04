@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "899772632609",
+    "firebase_url": "https://testapp-1561631455316.firebaseio.com",
+    "project_id": "testapp-1561631455316",
+    "storage_bucket": "testapp-1561631455316.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899772632609:android:a7743e4299e88717",
+        "android_client_info": {
+          "package_name": "com.webrand.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "899772632609-lp0lcd1e8sqvmajg9ei3uicjp6s5f8gc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC-M5AxZfvz01VgbS_30cC59gYLdPURpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "899772632609-lp0lcd1e8sqvmajg9ei3uicjp6s5f8gc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
