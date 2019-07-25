@@ -187,14 +187,16 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
+                defaultCity = place.getName();
+                isByName = true;
+                getWeatherByName(place.getName());
                 Toast.makeText(MainActivity.this, "Place: " + place.getName() + ", " + place.getId(),Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
+                showToastMessage(getResources().getString(R.string.msg_cant_find_city));
             }
         });
     }
