@@ -12,13 +12,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -33,6 +35,7 @@ import com.webrand.weather.Model.WeatherResponse;
 import com.webrand.weather.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +49,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuItemClickListener {
 
     private static final String IMG_URL = "https://openweathermap.org/img/w/";
+    private static final String TAG = "MainActivity";
 
     private String defaultCity = "Bishkek";
 
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
     List<Place.Field> placeField = Collections.singletonList(Place.Field.NAME);
     AutocompleteSupportFragment places_fragment = new AutocompleteSupportFragment();
 
-    private FusedLocationProviderClient fusedLocationClient;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
             public void onRefresh() {
                 update();
             }
+
         });
 
         checkLocationPermission();
@@ -91,9 +96,7 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
         utils = new Utils(this);
 
         initPlaces();
-        setupPlaceAutoComplete();
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        setupPlaceAutoComplete();
 
         getWeatherByName(defaultCity);
 
@@ -111,20 +114,36 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
 
     private void getCurrentLocation() {
         if (checkLocationPermission()){
-            if (utils.checkStatusOfGPS())
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
+            if (utils.checkStatusOfGPS()) {
+
+                FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                try {
+                    final Task location = mFusedLocationProviderClient.getLastLocation();
+                    location.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "onComplete: found location!");
+                                Location currentLocation = (Location) task.getResult();
+                                if (currentLocation != null) {
+                                    latitude = currentLocation.getLatitude();
+                                    longitude = currentLocation.getLongitude();
                                     isByName = false;
                                     getWeatherByCoordinates();
-                                    showToastMessage("Latitude:"+latitude+" \nLongitude:"+longitude);
+                                    showToastMessage("Latitude:" + latitude + " \nLongitude:" + longitude);
                                 }
+                            } else {
+                                Log.d(TAG, "onComplete: current location is null");
+                                Toast.makeText(MainActivity.this, "Could'nt get current location", Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        }
+                    });
+
+
+                } catch (SecurityException e) {
+                    Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+                }
+            }
             else {
                 utils.showSettingsDialog();
             }
@@ -153,8 +172,31 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
     }
 
     private void initPlaces() {
-        Places.initialize(getApplicationContext(),getString(R.string.key_api));
-        placesClient = Places.createClient(this);
+//        Places.initialize(getApplicationContext(),getString(R.string.key_api));
+//        placesClient = Places.createClient(this);
+        if (!Places.isInitialized()) {
+            Places.initialize(this, getString(R.string.key_api));
+        }
+
+// Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.text_autocomplete);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Toast.makeText(MainActivity.this, "Place: " + place.getName() + ", " + place.getId(),Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
 
     private boolean checkLocationPermission() {

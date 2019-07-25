@@ -61,7 +61,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Objects.requireNonNull(dateFormat.parse(weatherDataArrayList.get(position).date)));
-            output = calendar.get(Calendar.DAY_OF_MONTH) +"/"+ calendar.get(Calendar.MONTH) ;
+            output = calendar.get(Calendar.DAY_OF_MONTH) +"/"+ calendar.get(Calendar.MONTH);
         } catch (ParseException e) {
             e.printStackTrace();
         }
