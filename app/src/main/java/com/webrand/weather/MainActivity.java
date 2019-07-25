@@ -182,11 +182,11 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.text_autocomplete);
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        Objects.requireNonNull(autocompleteFragment).setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
+            public void onPlaceSelected(@NonNull Place place) {
                 defaultCity = place.getName();
                 isByName = true;
                 getWeatherByName(place.getName());
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements  Toolbar.OnMenuIt
             }
 
             @Override
-            public void onError(Status status) {
+            public void onError(@NonNull Status status) {
                 Log.i(TAG, "An error occurred: " + status);
                 showToastMessage(getResources().getString(R.string.msg_cant_find_city));
             }
